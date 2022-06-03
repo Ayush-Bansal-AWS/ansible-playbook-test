@@ -1,0 +1,23 @@
+--- 
+- name: create_dir #name of playbook
+  hosts: ansible_clients #host at which playbook will be executed
+  remote_user: ec2-user
+  become: true #you need to become root to provide escalated escalations
+  vars_files:
+    - /vars/vars.yml
+  tasks:
+    - name: Create a directory to install all tools
+      file:
+        path: "{{tools_dir_loc}}/{{new_dir_name}}"
+        state: directory
+      register: dir_status
+    
+    - debug: msg="Directory created"
+      when: dir_status.changed
+      
+    - debug: msg="{{dir_status}}"
+      when: dir_status
+      
+    - debug: msg="We have done it"
+      when: dir_status.changed == false
+...

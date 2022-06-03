@@ -1,0 +1,11 @@
+--- 
+- name: remove_dir #name of playbook
+  hosts: ansible_clients #system at which playbook will be executed
+  remote_user: ec2-user
+  become: true #you need to become root to provide escalated escalations
+  tasks:
+    - name: Remove a directory
+      file:
+        path: "/usr/bin/tools"
+        state: absent
+...
