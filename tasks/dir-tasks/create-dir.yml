@@ -1,23 +1,23 @@
---- 
+---
 - name: create_dir #name of playbook
   hosts: ansible_clients #host at which playbook will be executed
   remote_user: ec2-user
   become: true #you need to become root to provide escalated escalations
+  gather_facts: no
   vars_files:
-    - /vars/vars.yml
+    - group_vars/all
+
   tasks:
-    - name: Create a directory to install all tools
+    - name: Create a directory
       file:
+        #new_dir_name needs to be passed through command line using --extra-vars flag
+        #tools_dir_loc is referenced from vars_files.
         path: "{{tools_dir_loc}}/{{new_dir_name}}"
         state: directory
-      register: dir_status
-    
-    - debug: msg="Directory created"
+      register: dir_status.
+
+    - debug: msg="Directory created at {{tools_dir_loc}}"
       when: dir_status.changed
-      
-    - debug: msg="{{dir_status}}"
-      when: dir_status
-      
-    - debug: msg="We have done it"
+
+    - debug: msg="There is already a folder name {{new_dir_name}} at {{tools_dir_loc}}."
       when: dir_status.changed == false
-...
