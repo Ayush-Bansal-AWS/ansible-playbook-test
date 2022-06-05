@@ -1,7 +1,6 @@
-#update the name of the directory
-#list the subfolders of the directory
+#install kubectl
 ---
-  - name: directory-crud.yml #name of playbook
+  - name: kubectl-playbook.yml #name of playbook
     hosts: ansible_clients #host at which playbook will be executed
     remote_user: "{{remote_user_linux}}"
     become: true #you need to become root to provide escalated escalations
@@ -13,10 +12,8 @@
       - name: Create a directory
         import_tasks: ../tasks/directory-crud/create-dir-task.yml
         tags: 
-          - create_dir
-          - aws_install_zip
-
+          - kubectl_download
       
-      - name: Remove a directory
-        import_tasks: ../tasks/directory-crud/remove-dir-task.yml
-        tags: remove_dir
+      - name: Install kubectl binary
+        import_tasks: ../tasks/install/kubectl-install.yml
+        tags: kubectl_download

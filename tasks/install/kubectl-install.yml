@@ -1,0 +1,12 @@
+---
+- name: Install kubectl binary with get_url on remote_user_linux
+  get_url:
+    url: https://dl.k8s.io/release/v1.24.0/bin/linux/amd64/kubectl
+    dest: "{{tools_dir_loc}}/k8-tools"
+  register: kubectl_download
+  tags: 
+    - kubectl_download
+
+- debug: msg="Kubectl binary installed."
+  when: kubectl_download.changed
+  tags: kubectl_download
