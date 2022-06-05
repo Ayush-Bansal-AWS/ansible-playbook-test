@@ -1,2 +1,3 @@
 #list down all the variables that are generic to the playbook
 tools_dir_loc: /usr/bin/tools
+remote_user_linux: ec2-user

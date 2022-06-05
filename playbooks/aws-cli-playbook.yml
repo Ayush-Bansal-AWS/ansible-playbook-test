@@ -1,0 +1,28 @@
+#install aws cli
+#delete aws cli
+#update aws cli
+#check aws cli version
+---
+- name: aws-cli #name of playbook
+  hosts: ansible_clients #system at which playbook will be executed
+  remote_user: ec2-user
+  become: true #you need to become root to provide escalated escalations
+  gather_facts: false
+  vars_files:
+    - group_vars/all
+  tasks:
+    - name: Setting variables
+      set_fact: new_dir_name="aws-cli"        
+      tags: aws_install_zip
+      
+    - name: Create a directory "aws-cli" to store the installer
+      import_tasks: ../tasks/directory-crud/create-dir-task.yml
+      tags: aws_install_zip
+      
+    - name: Download the zip module
+      import_tasks: ../tasks/install/main.yml
+      tags: aws_install_zip
+    
+    - name: Check the aws version
+      import_tasks: ../tasks/version-check/main.yml
+      tags: aws_install_zip

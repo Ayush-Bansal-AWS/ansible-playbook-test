@@ -1,0 +1,56 @@
+---
+- name: Download the AWS Installer in zip format
+  get_url:
+    url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
+    dest: "{{tools_dir_loc}}/aws-cli/awscli-bundle.zip"
+  register: aws_cli_download_zip_bundle
+  tags: 
+    - aws_install_zip
+      
+- debug: msg="AWS CLI ZIP Installer is downloaded"
+  when: aws_cli_download_zip_bundle.changed
+  tags: 
+    - aws_install_zip
+    
+- debug: msg="AWS CLI ZIP Installer is already present."
+  when: 
+    - aws_cli_download_zip_bundle.changed == false
+    - aws_cli_download_zip_bundle.failed == false
+  tags: 
+    - aws_install_zip
+
+- name: Unarchive the installer.
+  unarchive: 
+    src: "{{tools_dir_loc}}/aws-cli/awscli-bundle.zip" 
+    dest: "{{tools_dir_loc}}/aws-cli"
+    remote_src: yes 
+  when: (aws_cli_download_bundle.changed) or ((aws_cli_download_bundle.changed == false) and (aws_cli_download_bundle.failed == false))
+  register: aws_cli_unarchive_installer
+  tags:
+    - aws_install_zip
+      
+- debug: msg="Unarchive zip installer successfuly"
+  when: aws_cli_unarchive_installer.changed
+  tags:
+    - aws_install_zip
+    
+- debug: msg="Unarchived bundle already present"
+  when:
+    - aws_cli_unarchive_installer.changed == false
+    - aws_cli_unarchive_installer.failed == false
+  tags:
+    - aws_install_zip
+
+- name: Install awscli package.
+  shell: "{{tools_dir_loc}}/aws-cli/aws/install -i /usr/bin/aws-cli -b /usr/bin"
+  args:
+    creates: /usr/bin/aws
+    register: aws_cli_install_package
+    when: (aws_cli_unarchive_installer.changed) or ((aws_cli_unarchive_installer.changed == false) and (aws_cli_unarchive_installer.failed == false))
+  tags:
+    - aws_install_zip
+    
+- debug: msg="Package installed successfuly"
+  when: aws_cli_install_package.changed
+  tags:
+    - aws_install_zip

@@ -1,0 +1,22 @@
+#update the name of the directory
+#list the subfolders of the directory
+---
+  - name: directory-crud.yml #name of playbook
+    hosts: ansible_clients #host at which playbook will be executed
+    remote_user: "{{remote_user_linux}}"
+    become: true #you need to become root to provide escalated escalations
+    gather_facts: false
+    vars_files:
+      - group_vars/all
+
+    tasks:
+      - name: Create a directory
+        import_tasks: ../tasks/dir-tasks/create-dir-task.yml
+        tags: 
+          - create_dir
+          - aws_install_zip
+
+      
+      - name: Remove a directory
+        import_tasks: ../tasks/dir-tasks/remove-dir-task.yml
+        tags: remove_dir

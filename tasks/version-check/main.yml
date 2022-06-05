@@ -1,0 +1,10 @@
+---
+- name: Check AWS CLI Version
+  shell: aws --version
+  register: aws_cli_version
+  tags:
+    - aws_install_zip
+      
+- debug: msg="AWS CLI is already installed with version {{aws_cli_version.stdout}}"
+  tags:
+    - aws_install_zip
