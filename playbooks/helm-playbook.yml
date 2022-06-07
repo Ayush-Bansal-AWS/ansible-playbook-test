@@ -1,0 +1,19 @@
+#install helm
+---
+  - name: helm-playbook.yml #name of playbook
+    hosts: ansible_clients #host at which playbook will be executed
+    remote_user: "{{remote_user_linux}}"
+    become: true #you need to become root to provide escalated escalations
+    gather_facts: false
+    vars_files:
+      - group_vars/all
+
+    tasks:
+      - name: Create a directory
+        import_tasks: ../tasks/directory-crud/create-dir-task.yml
+        tags: 
+          - helm_download
+      
+      - name: Install helm binary
+        import_tasks: ../tasks/install/helm-install.yml
+        tags: helm_download

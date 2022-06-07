@@ -1,0 +1,31 @@
+---
+- name: Download and extract the latest release of helm in linux
+  get_url:
+    url: "https://get.helm.sh/helm-v3.9.0-linux-amd64.tar.gz"
+    dest: "{{tools_dir_loc}}/k8-tools"
+  register: helm_download
+  tags: 
+    - helm_download
+
+- debug: msg="helm installed."
+  when: helm_download.changed
+  tags: helm_download
+
+- name: Unarchive the tar.gz file
+  unarchive:
+    src: "{{tools_dir_loc}}/k8-tools/helm-v3.9.0-linux-amd64.tar.gz"
+    dest: "{{tools_dir_loc}}/k8-tools"
+    remote_src: yes
+
+- name: Copy the installed file to /usr/bin
+  shell: cp {{tools_dir_loc}}/k8-tools/linux-amd64/helm /usr/bin
+
+  register: helm_copy
+
+- name: Check helm version
+  shell: helm version --short
+  register: helm_version
+  tags:
+    - helm_download
+
+- debug: msg="helm is installed with version {{helm_version.stdout}}"  
